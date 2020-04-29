@@ -11,7 +11,8 @@ var user = { name: params.get("nombre"), room: params.get("sala") };
 socket.on("connect", () => {
   // Send
   socket.emit("inChat", user, (res) => {
-    console.log("Connect User: ", res);
+    renderUsers(res);
+    // console.log("Connect User: ", res);
   });
 });
 
@@ -23,7 +24,10 @@ socket.on("disconnect", () => {
 
 // Listening to Back-End
 socket.on("notification", (data) => {
-  console.log(`${data.name}: `, data.message, data.date);
+  renderMessage(data, false);
+  scrollBottom();
+
+  // console.log(`${data.name}: `, data.message, data.date);
 });
 
 socket.on("privateMessage", (data) => {
@@ -31,7 +35,8 @@ socket.on("privateMessage", (data) => {
 });
 
 socket.on("listPeople", (data) => {
-  console.log("People Connect:", data);
+  renderUsers(data);
+  // console.log("People Connect:", data);
 });
 
 // Events Front - End

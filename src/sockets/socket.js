@@ -23,6 +23,10 @@ io.on("connection", (client) => {
     client.broadcast
       .to(data.room)
       .emit("listPeople", user.getPeopleRoom(data.room));
+    // Connect user
+    client.broadcast
+      .to(data.room)
+      .emit("notification", notificacion("Admin", `${data.name} se unió`));
 
     callback(user.getPeopleRoom(data.room));
   });
@@ -35,12 +39,12 @@ io.on("connection", (client) => {
       .emit("privateMessage", notificacion(person.name, data.message));
   });
 
-  client.on("notification", (data) => {
+  client.on("notification", (data, callback) => {
     let person = user.getById(client.id);
-    let message = data.message;
-    client.broadcast
-      .to(person.room)
-      .emit("notification", notificacion(person.name, message));
+    let message = notificacion(person.name, data.message);
+    client.broadcast.to(person.room).emit("notification", message);
+
+    callback(message);
   });
 
   client.on("disconnect", () => {
